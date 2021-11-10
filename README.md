@@ -1,2 +1,2 @@
-# Flutter_XKCD_Demo
+# Flutter XKCD Demo
 Demo Flutter Application to display XKCD Comics
