@@ -105,29 +105,20 @@ class CatalogueState extends State<Catalogue> {
     });
   }
 
-  void _pushSaved() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) {
-      final Iterable<ListTile> tiles = _savedNums.map((int pair) {
-        return ListTile(
-            title: Text(pair.toString(), style: TextStyle(fontSize: 16.0)));
-      });
-
-      final List<Widget> divided =
-          ListTile.divideTiles(context: context, tiles: tiles).toList();
-
-      return Scaffold(
-          appBar: AppBar(title: Text('Saved Comics')),
-          body: ListView(children: divided));
-    }));
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('XKCD Comic Viewer'),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)
+            IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/favourites',
+                  arguments: [_savedComics, context],
+                );
+              },
+            )
           ],
         ),
         body: _buildList());

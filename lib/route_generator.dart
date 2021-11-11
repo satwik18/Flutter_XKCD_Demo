@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xkcd_demo/main.dart';
+import 'package:xkcd_demo/models/comic.dart';
 import 'package:xkcd_demo/pages/catalogue.dart';
+import 'package:xkcd_demo/pages/favourites.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -10,21 +12,19 @@ class RouteGenerator {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => Catalogue());
-      /*case '/second':
+      case '/favourites':
         // Validation of correct data type
-        if (args is String) {
+        List<dynamic> argsAsList = args as List<dynamic>;
+        if (argsAsList.isNotEmpty &&
+            argsAsList[0] is Set<Comic> &&
+            argsAsList[1] is BuildContext) {
           return MaterialPageRoute(
-            builder: (_) => SecondPage(
-              data: args,
-            ),
+            builder: (_) => Favourites(argsAsList[0], argsAsList[1]),
           );
         }
         // If args is not of the correct type, return an error page.
-        // You can also throw an exception while in development.
         return _errorRoute();
-        */
       default:
-        // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
     }
   }
