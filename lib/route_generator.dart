@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:xkcd_demo/main.dart';
 import 'package:xkcd_demo/models/comic.dart';
 import 'package:xkcd_demo/pages/catalogue.dart';
+import 'package:xkcd_demo/pages/comic_viewer.dart';
 import 'package:xkcd_demo/pages/favourites.dart';
 
 class RouteGenerator {
@@ -14,15 +14,17 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Catalogue());
       case '/favourites':
         // Validation of correct data type
-        List<dynamic> argsAsList = args as List<dynamic>;
-        if (argsAsList.isNotEmpty &&
-            argsAsList[0] is Set<Comic> &&
-            argsAsList[1] is BuildContext) {
+        if (args is Set<Comic>) {
           return MaterialPageRoute(
-            builder: (_) => Favourites(argsAsList[0], argsAsList[1]),
-          );
+              builder: (_) => Favourites(savedComics: args));
         }
-        // If args is not of the correct type, return an error page.
+
+        return _errorRoute();
+      case '/comic_viewer':
+        if (args is Comic) {
+          return MaterialPageRoute(builder: (_) => ComicViewer(comic: args));
+        }
+
         return _errorRoute();
       default:
         return _errorRoute();
@@ -33,9 +35,9 @@ class RouteGenerator {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Error'),
+          title: const Text('Error'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('ERROR'),
         ),
       );

@@ -2,23 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:xkcd_demo/models/comic.dart';
 
 class Favourites extends StatelessWidget {
-  final Set<Comic> _savedComics;
-  final BuildContext _context;
-  final Iterable<ListTile> _tiles;
+  final Set<Comic> savedComics;
 
-  Favourites(this._savedComics, this._context)
-      : _tiles = _savedComics.map((Comic comic) {
-          return ListTile(
-              title: Text(comic.title + ' | ' + comic.comicNumber.toString(),
-                  style: TextStyle(fontSize: 16.0)));
-        });
+  const Favourites({key, required this.savedComics}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Iterable<ListTile> tiles = savedComics.map((Comic comic) {
+      return ListTile(
+          title: Text(comic.title + ' | ' + comic.comicNumber.toString(),
+              style: const TextStyle(fontSize: 16.0)),
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              '/comic_viewer',
+              arguments: comic,
+            );
+          });
+    });
+
     return Scaffold(
-        appBar: AppBar(title: Text('Saved Comics')),
+        appBar: AppBar(title: const Text('Favourites'), centerTitle: true),
         body: ListView(
-            children: ListTile.divideTiles(context: _context, tiles: _tiles)
-                .toList()));
+            children:
+                ListTile.divideTiles(context: context, tiles: tiles).toList()));
   }
 }

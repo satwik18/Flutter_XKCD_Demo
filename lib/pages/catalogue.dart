@@ -9,7 +9,7 @@ class Catalogue extends StatefulWidget {
 
 class CatalogueState extends State<Catalogue> {
   //CONSTANTS
-  final BATCH_SIZE = 15;
+  static const batchSize = 15;
 
   //DEPENDENCEIS
   final HttpService httpService = HttpService();
@@ -18,8 +18,7 @@ class CatalogueState extends State<Catalogue> {
   //STATE VARS
   final _fetchedComics = <Comic>[];
   int _numComics = 0;
-  final _savedComics = Set<Comic>();
-  final _savedNums = Set<int>();
+  final _savedComics = <Comic>{};
 
   void _fetchInitData() {
     httpService.getComic().then((res) {
@@ -56,7 +55,7 @@ class CatalogueState extends State<Catalogue> {
       padding: const EdgeInsets.all(16.0),
       itemCount: _fetchedComics.isEmpty ? 0 : (_fetchedComics.length * 2) - 1,
       itemBuilder: (context, item) {
-        if (item.isOdd) return Divider();
+        if (item.isOdd) return const Divider();
 
         final index = item ~/ 2;
 
@@ -70,12 +69,17 @@ class CatalogueState extends State<Catalogue> {
 
     return ListTile(
         title: Text(comic.title + ' | ' + comic.comicNumber.toString(),
-            style: TextStyle(fontSize: 18.0)),
+            style: const TextStyle(fontSize: 18.0)),
         trailing: IconButton(
             icon: Icon(alreadySaved ? Icons.favorite : Icons.favorite_border,
                 color: alreadySaved ? Colors.red : null),
             onPressed: () => _pushFavorite(alreadySaved, comic)),
-        onTap: () {});
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            '/comic_viewer',
+            arguments: comic,
+          );
+        });
   }
 
   void _pushFavorite(isSaved, comic) {
@@ -94,7 +98,7 @@ class CatalogueState extends State<Catalogue> {
     }
     var comicsToFetch = <int>[];
     for (int i = _numComics - _fetchedComics.length;
-        i > (_numComics - _fetchedComics.length) - BATCH_SIZE;
+        i > (_numComics - _fetchedComics.length) - batchSize;
         i--) {
       comicsToFetch.add(i);
     }
@@ -105,17 +109,18 @@ class CatalogueState extends State<Catalogue> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('XKCD Comic Viewer'),
+          title: const Text('XKCD Comic Viewer'),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.list),
+              icon: const Icon(Icons.list),
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   '/favourites',
-                  arguments: [_savedComics, context],
+                  arguments: _savedComics,
                 );
               },
             )

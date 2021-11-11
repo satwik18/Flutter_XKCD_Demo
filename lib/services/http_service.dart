@@ -9,7 +9,7 @@ class HttpService {
     return _instance;
   }
 
-  static final HttpService _instance = new HttpService._internal();
+  static final HttpService _instance = HttpService._internal();
 
   final _baseURL = 'https://www.xkcd.com/';
   final _baseSuffix = 'info.0.json';
